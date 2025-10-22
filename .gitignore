@@ -101,7 +101,17 @@ ipython_config.py
 #uv.lock
 
 # poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
+#   Similar to Pipfile{% extends 'base.html' %}
+{% block content %}
+<h2>Welcome</h2>
+<p>This is your dashboard.</p>
+
+{% with messages = get_flashed_messages() %}
+{% for message in messages %}
+<p style="color:red;">{{ message }}</p>
+{% endfor %}
+{% endwith %}
+{% endblock %}.lock, it is generally recommended to include poetry.lock in version control.
 #   This is especially recommended for binary packages to ensure reproducibility, and is more
 #   commonly ignored for libraries.
 #   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
@@ -205,3 +215,4 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+.idea/
