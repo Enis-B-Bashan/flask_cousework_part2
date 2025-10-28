@@ -7,4 +7,5 @@ flask-wtf
 flask-sqlalchemy
 flask-login
 pyotp
+Flask-Limiter
 
