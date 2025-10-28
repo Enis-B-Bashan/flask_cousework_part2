@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import session
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models import User
 from app.forms import LoginForm
+from flask import Blueprint, render_template, redirect, url_for, flash
 
 main = Blueprint('main', __name__)
 
@@ -15,7 +16,10 @@ def login():
         user = User.query.filter_by(username=username).first()
 
         if user and user.check_password(password):
-            login_user(user)
+            session.clear()
+
+            login_user(user, fresh=True)
+
             flash("Login successful!", "success")
             return redirect(url_for('main.dashboard'))
         else:
@@ -34,5 +38,6 @@ def dashboard():
 @login_required
 def logout():
     logout_user()
+    session.clear()
     flash("You have been logged out.", "info")
     return redirect(url_for('main.login'))
