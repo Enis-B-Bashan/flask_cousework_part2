@@ -1,7 +1,6 @@
-# app/routes.py
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
-from werkzeug.security import check_password_hash
+import bcrypt
 from app.models import User
 from app.forms import LoginForm
 
@@ -12,11 +11,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data.strip()
-        password = form.password.data
+        password = form.password.data.encode('utf-8')
 
         user = User.query.filter_by(username=username).first()
 
-        if user and check_password_hash(user.password, password):
+        if user and bcrypt.checkpw(password, user.password.encode('utf-8')):
             login_user(user)
             flash("Login successful!", "success")
             return redirect(url_for('main.dashboard'))
