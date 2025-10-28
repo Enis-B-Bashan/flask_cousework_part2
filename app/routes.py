@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
-import bcrypt
+from flask_login import login_user, logout_user, login_required, current_user
 from app.models import User
 from app.forms import LoginForm
 
@@ -11,11 +10,11 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         username = form.username.data.strip()
-        password = form.password.data.encode('utf-8')
+        password = form.password.data
 
         user = User.query.filter_by(username=username).first()
 
-        if user and bcrypt.checkpw(password, user.password.encode('utf-8')):
+        if user and user.check_password(password):
             login_user(user)
             flash("Login successful!", "success")
             return redirect(url_for('main.dashboard'))
@@ -28,7 +27,7 @@ def login():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', username=current_user.username)
 
 
 @main.route('/logout')

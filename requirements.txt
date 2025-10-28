@@ -1,6 +1,6 @@
 
 wtforms
-
+bcrypt
 flask
 flask-wtf
 flask-sqlalchemy
