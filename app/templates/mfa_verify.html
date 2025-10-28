@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Enter the TOTP code from your Authenticator App</h2>
+
+<form method="POST" novalidate>
+    {{ form.hidden_tag() }}
+    <div>{{ form.totp_code.label }}<br>{{ form.totp_code(size=6) }}</div>
+    <div>{{ form.submit() }}</div>
+</form>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+{% endblock %}

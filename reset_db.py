@@ -14,13 +14,13 @@ with app.app_context():
     db.create_all()
 
     if User.query.count() == 0:
-        admin = User(username='admin')
+        admin = User(username='admin', totp_secret=None)
         admin.set_password('admin123')
 
-        user1 = User(username='user1')
+        user1 = User(username='user1', totp_secret=None)
         user1.set_password('letmein')
 
-        user2 = User(username='user2')
+        user2 = User(username='user2', totp_secret=None)
         user2.set_password('welcome123')
 
         db.session.add_all([admin, user1, user2])

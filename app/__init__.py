@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_qrcode import QRcode
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from config import Config
@@ -7,6 +8,7 @@ from config import Config
 db = SQLAlchemy()
 csrf = CSRFProtect()
 login_manager = LoginManager()
+qrcode = QRcode()
 
 def create_app():
     app = Flask(__name__)
@@ -15,6 +17,7 @@ def create_app():
     db.init_app(app)
     csrf.init_app(app)
     login_manager.init_app(app)
+    qrcode.init_app(app)
     login_manager.login_view = 'main.login'
     app.config.update(
         SESSION_COOKIE_SECURE=True,

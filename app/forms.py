@@ -14,3 +14,7 @@ class LoginForm(FlaskForm):
         render_kw={"placeholder": "Enter your password"}
     )
     submit = SubmitField("Login")
+
+class TOTPForm(FlaskForm):
+    totp_code = StringField("TOTP Code", validators=[DataRequired(), Length(min=6, max=6)])
+    submit = SubmitField("Verify")
