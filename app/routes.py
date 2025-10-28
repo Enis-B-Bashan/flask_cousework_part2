@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
+from wtforms.validators import DataRequired
 from .models import User
 from .forms import LoginForm, TOTPForm
 from . import db, limiter
@@ -10,6 +11,7 @@ import pyotp
 main = Blueprint('main', __name__)
 MAX_FAILED = 5
 LOCKOUT_DURATION = timedelta(minutes=5)
+CAPTCHA_THRESHOLD = 3
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -22,6 +24,16 @@ def login():
         username = form.username.data.strip()
         password = form.password.data
         user = User.query.filter_by(username=username).first()
+
+        require_captcha = user and user.failed_attempts >= CAPTCHA_THRESHOLD
+
+        if require_captcha:
+            form.recaptcha.validators = [DataRequired(message="Please complete the CAPTCHA.")]
+        else:
+            form.recaptcha.validators = []
+
+        if not form.validate():
+            return render_template('login.html', form=form, show_captcha=require_captcha)
 
         if user:
             if user.lockout_until and datetime.utcnow() < user.lockout_until:
@@ -54,7 +66,8 @@ def login():
         else:
             flash("Invalid username or password.", "danger")
 
-    return render_template('login.html', form=form)
+    show_captcha = user and user.failed_attempts >= CAPTCHA_THRESHOLD
+    return render_template('login.html', form=form, show_captcha=show_captcha)
 
 @main.route('/dashboard')
 @login_required

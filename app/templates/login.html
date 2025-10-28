@@ -15,6 +15,13 @@
         {{ form.password(size=30) }}
     </div>
 
+    {% if show_captcha %}
+    <div>
+        {{ form.recaptcha.label }}<br>
+        {{ form.recaptcha }}
+    </div>
+    {% endif %}
+
     <div>
         {{ form.submit() }}
     </div>
